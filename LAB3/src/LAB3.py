@@ -15,7 +15,7 @@ class BooleanOperations:
         return eval(expression)
     
     @staticmethod
-    def truthTableGenerator(expression : str) -> str:
+    def truthTableGenerator(expression : str):
         expression2 = expression.replace('(', ' ')
         expression2 = expression2.replace(')', ' ')
         words = expression2.split()
@@ -25,6 +25,7 @@ class BooleanOperations:
             if word.upper() not in {'AND', 'OR', 'NOT', 'XOR'}:
                 headers.append(word)
         
+        headers = list(set(headers))
         headers.sort()
         headers.append(expression)
 
@@ -45,7 +46,17 @@ class BooleanOperations:
 
         table = tabulate(data, headers, tablefmt="github")
 
+        return table, headers, data
+    
+    def whenFalse(expression : str) -> str:
+        _, headers, data = BooleanOperations.truthTableGenerator(expression)
+        resultData = []
+        for i in range(len(data)):
+            if data[i][-1] == False:
+                resultData.append(data[i])
+        table = tabulate(resultData, headers, tablefmt="github")
         return table
         
-print(BooleanOperations.expressionEvaluator("(A AND B) OR NOT C", {"A": True, "B": False, "C": True}))
-print(BooleanOperations.truthTableGenerator("(A AND B) OR C"))
+           
+
+print(BooleanOperations.whenFalse("NOT A OR B AND (A AND NOT C)"))
